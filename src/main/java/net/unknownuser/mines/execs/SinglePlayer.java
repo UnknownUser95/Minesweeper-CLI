@@ -39,7 +39,7 @@ public class SinglePlayer {
 					System.out.printf("%nBoard (%dx%d) generated with %d mines%n%n", width, height, amountMines);
 				} else {
 					gameField = new Board(boardPreset.width, boardPreset.height, boardPreset.mineAmount);
-					System.out.printf("%nBoard (%dx%d) generated with %d mines%n%n", boardPreset.width, boardPreset.height, boardPreset.mineAmount);
+					System.out.printf("%n%s board (%dx%d) generated with %d mines%n%n",boardPreset.name ,boardPreset.width, boardPreset.height, boardPreset.mineAmount);
 				}
 			}
 			
@@ -121,7 +121,7 @@ public class SinglePlayer {
 				} while(!done);
 			
 			System.out.println("game is finished\n");
-			System.out.println(gameField.show());
+			System.out.println((gameField != null) ? gameField.show() : "");
 			
 		} catch(NumberFormatException exc) {
 			System.err.println("invalid number");
