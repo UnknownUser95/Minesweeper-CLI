@@ -32,3 +32,7 @@ syntax: debug <option>
 As of now, there are two options:
   - show: displays the board without the "fog"
   - value: shows the value of each board. Mines have a "-"
+
+## exit / done
+
+Ends the game and shows the clear board.
