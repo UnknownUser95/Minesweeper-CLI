@@ -165,7 +165,8 @@ public class Board {
 		while(!pointsToCheck.isEmpty()) {
 			Point point = pointsToCheck.get(0);
 //			boardField[point.x][point.y].update();
-			if(hasEmptyNeighour(point.x, point.y)) {
+			Field field = getField(point.x, point.y);
+			if((field.getValue() == 0 && field.getShownType() == FieldType.UNKNOWN) || hasEmptyNeighour(point.x, point.y)) {
 				getField(point.x, point.y).update();
 			}
 //			System.out.println(point);
@@ -240,21 +241,21 @@ public class Board {
 			return isInBounds(t, u) && field.getActualType() == FieldType.EMPTY && field.getValue() == 0;
 		};
 		
-		System.out.println(boardField[xMid][yMid]);
+//		System.out.println(boardField[xMid][yMid]);
 		if(hasEmtpyNeighbourPred.test(xMid, yMid + 1)) {
-			System.out.println("N");
+//			System.out.println("N");
 			return true;
 		}
 		if(hasEmtpyNeighbourPred.test(xMid, yMid - 1)) {
-			System.out.println("S");
+//			System.out.println("S");
 			return true;
 		}
 		if(hasEmtpyNeighbourPred.test(xMid + 1, yMid)) {
-			System.out.println("E");
+//			System.out.println("E");
 			return true;
 		}
 		if(hasEmtpyNeighbourPred.test(xMid - 1, yMid)) {
-			System.out.println("W");
+//			System.out.println("W");
 			return true;
 		}
 //		System.out.println("False");
