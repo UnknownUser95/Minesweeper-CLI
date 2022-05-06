@@ -2,6 +2,7 @@ package net.unknownuser.mines.types;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 public class Board {
@@ -53,6 +54,7 @@ public class Board {
 	
 	/**
 	 * Gets the value of a field based of the amount of neighbouring mines
+	 * 
 	 * @param xMid x coordinate of the point
 	 * @param yMid y coordinate of the point
 	 * @return The value of the point
@@ -137,7 +139,6 @@ public class Board {
 		}
 	}
 	
-	
 	/**
 	 * Imitates a click on a field.
 	 * 
@@ -183,11 +184,11 @@ public class Board {
 	/**
 	 * Adds all of the empty neighbouring points to the list of points to check.
 	 * 
-	 * @param xMid x coordinate of the middle
-	 * @param yMid y coordinate of the middle
+	 * @param x x coordinate of the middle
+	 * @param y y coordinate of the middle
 	 */
-	private void addNeighbours(int xMid, int yMid) {
-//		System.out.printf("adding points around %d/%d%n", xMid, yMid);
+	private void addNeighbours(int x, int y) {
+		// test if any field is shown as UNKNOWN and is EMPTY
 		BiPredicate<Integer, Integer> isUnknownEmpty = (t, u) -> {
 			if(isInBounds(t, u)) {
 				Field field = getField(t, u);
@@ -196,73 +197,46 @@ public class Board {
 			return false;
 		};
 		
-		if(hasEmptyNeighour(xMid, yMid)) {
-//			if(isInBounds(xMid, yMid + 1) && boardField[xMid][yMid + 1].getShownType() == FieldType.UNKNOWN) {
-			if(isUnknownEmpty.test(xMid, yMid + 1) && hasEmptyNeighour(xMid, yMid + 1)) {
-				Point point = new Point(xMid, yMid + 1);
-				if(!pointsToCheck.contains(point)) {
+		// adds the point if it is EMPTY and UNKNOWN; updates non-0 EMPTY fields
+		BiConsumer<Integer, Integer> isValid = (t, u) -> {
+			if(isUnknownEmpty.test(t, u) && hasEmptyNeighour(t, u)) {
+				Point point = new Point(t, u);
+				if(getField(t, u).getValue() > 0) {
+					getField(t, u).update();
+				} else if(!pointsToCheck.contains(point)) {
 					pointsToCheck.add(point);
 				}
 			}
-//			if(isInBounds(xMid, yMid - 1) && boardField[xMid][yMid - 1].getShownType() == FieldType.UNKNOWN) {
-			if(isUnknownEmpty.test(xMid, yMid - 1) && hasEmptyNeighour(xMid, yMid - 1)) {
-				Point point = new Point(xMid, yMid - 1);
-				if(!pointsToCheck.contains(point)) {
-					pointsToCheck.add(point);
-				}
-			}
-//			if(isInBounds(xMid + 1, yMid) && boardField[xMid + 1][yMid].getShownType() == FieldType.UNKNOWN) {
-			if(isUnknownEmpty.test(xMid + 1, yMid) && hasEmptyNeighour(xMid + 1, yMid)) {
-				Point point = new Point(xMid + 1, yMid);
-				if(!pointsToCheck.contains(point)) {
-					pointsToCheck.add(point);
-				}
-			}
-//			if(isInBounds(xMid - 1, yMid) && boardField[xMid - 1][yMid].getShownType() == FieldType.UNKNOWN) {
-			if(isUnknownEmpty.test(xMid - 1, yMid) && hasEmptyNeighour(xMid - 1, yMid)) {
-				Point point = new Point(xMid - 1, yMid);
-				if(!pointsToCheck.contains(point)) {
-					pointsToCheck.add(point);
-				}
-			}
+		};
+		
+		if(hasEmptyNeighour(x, y)) {
+			isValid.accept(x, y + 1);
+			isValid.accept(x, y - 1);
+			isValid.accept(x + 1, y);
+			isValid.accept(x - 1, y);
 		}
 	}
 	
 	/**
 	 * Test, whether a point has at least one empty neighbour.
 	 * 
-	 * @param xMid x coordinate of the point
-	 * @param yMid y coordinate of the point
+	 * @param x x coordinate of the point
+	 * @param y y coordinate of the point
 	 * @return {@code true} if at least one of the neighbouring fields is empty and has a value of 0,
 	 *         {@code false} otherwise.
 	 */
-	private boolean hasEmptyNeighour(int xMid, int yMid) {
-		BiPredicate<Integer, Integer> hasEmtpyNeighbourPred = (t, u) -> {
+	private boolean hasEmptyNeighour(int x, int y) {
+		BiPredicate<Integer, Integer> hasEmpty = (t, u) -> {
 //			Predicate<Field> emptyAndZero = arg0 -> arg0.getActualType() == FieldType.EMPTY && arg0.getValue() == 0;
 			Field field = getField(t, u);
 			return isInBounds(t, u) && field.getActualType() == FieldType.EMPTY && field.getValue() == 0;
 		};
 		
 //		System.out.println(boardField[xMid][yMid]);
-		if(hasEmtpyNeighbourPred.test(xMid, yMid + 1)) {
-//			System.out.println("N");
-			return true;
-		}
-		if(hasEmtpyNeighbourPred.test(xMid, yMid - 1)) {
-//			System.out.println("S");
-			return true;
-		}
-		if(hasEmtpyNeighbourPred.test(xMid + 1, yMid)) {
-//			System.out.println("E");
-			return true;
-		}
-		if(hasEmtpyNeighbourPred.test(xMid - 1, yMid)) {
-//			System.out.println("W");
-			return true;
-		}
-//		System.out.println("False");
-		return false;
+		return hasEmpty.test(x, y + 1) || hasEmpty.test(x, y - 1) || hasEmpty.test(x + 1, y) || hasEmpty.test(x - 1, y);
 	}
+	
+	// TODO: no point add when value != 0
 	
 	/**
 	 * Tests if a point is inside of the board.
@@ -290,6 +264,7 @@ public class Board {
 	
 	/**
 	 * Tests whether this board is finished.
+	 * 
 	 * @return {@code true} if the board is finished, {@code false} otherwise
 	 */
 	public boolean isDone() {
@@ -332,6 +307,7 @@ public class Board {
 	
 	/**
 	 * Returns a clone of the entire board.
+	 * 
 	 * @return A copy of this entire game field.
 	 */
 	public Field[][] getEntireBoard() {
