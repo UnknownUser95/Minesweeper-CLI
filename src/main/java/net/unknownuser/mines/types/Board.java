@@ -7,8 +7,8 @@ import java.util.function.BiPredicate;
 public class Board {
 	private final Field[][] boardField;
 	
-	private int width;
-	private int height;
+	public final int width;
+	public final int height;
 	
 	ArrayList<Point> pointsToCheck = new ArrayList<>();
 	
@@ -146,6 +146,10 @@ public class Board {
 	 * @return {@code true} if a mine has been clicked, {@code false} otherwise
 	 */
 	public boolean clickField(int x, int y) {
+		if(getField(x, y).getActualType() == FieldType.MINE) {
+//			getField(x, y).update(); - not needed, since the board is shown anyways
+			return true;
+		}
 		switch (getField(x, y).getShownType()) {
 		case MINE:
 			getField(x, y).update();
@@ -221,8 +225,6 @@ public class Board {
 					pointsToCheck.add(point);
 				}
 			}
-		} else {
-			System.out.printf("skipping %d,%d", xMid, yMid);
 		}
 	}
 	
