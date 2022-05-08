@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+import net.unknownuser.mines.methods.CustomBoards;
 import net.unknownuser.mines.types.Board;
 import net.unknownuser.mines.types.BoardPreset;
 import net.unknownuser.mines.types.Field;
@@ -20,70 +21,74 @@ public class SinglePlayer {
 			
 			for(BoardPreset pre : BoardPreset.values()) {
 				if(pre.name.equals(inputMode)) {
+					// if the input matches the name of any preset, use it.
 					boardPreset = pre;
+					break;
 				}
 			}
 			
+			// only continue if the player chose a valid preset
 			if(boardPreset != null) {
 				if(boardPreset == BoardPreset.CUSTOM) {
-					System.out.print("width of the board: ");
-					int width = Integer.parseInt(br.readLine());
-					
-					System.out.print("height of the board: ");
-					int height = Integer.parseInt(br.readLine());
-					
-					System.out.print("number of mines: ");
-					int amountMines = Integer.parseInt(br.readLine());
-					
-					gameField = new Board(width, height, amountMines);
-					System.out.printf("%nBoard (%dx%d) generated with %d mines%n%n", width, height, amountMines);
+					System.out.println();
+					gameField = CustomBoards.createCustomBoard(br);
 				} else {
 					gameField = new Board(boardPreset.width, boardPreset.height, boardPreset.mineAmount);
-					System.out.printf("%n%s board (%dx%d) generated with %d mines%n%n",boardPreset.name ,boardPreset.width, boardPreset.height, boardPreset.mineAmount);
+					System.out.printf("%n%s board (%dx%d) generated with %d mines", boardPreset.name, boardPreset.width, boardPreset.height, boardPreset.mineAmount);
 				}
 			}
 			
 			boolean done = false;
-			if(gameField != null)
+			// only of a board has been generated a game can be played
+			if(gameField != null) {
+				System.out.printf("%n%n");
+				// the main game loop
 				do {
+					// always show the current state of the field
 					System.out.println();
 					System.out.println(gameField);
+					// ask for a new command
 					System.out.print("command: ");
+					// commands are handled in lowercase
 					String command = br.readLine().toLowerCase();
 					
+					// just end the game now
 					if(command.equals("done") || command.equals("exit")) {
 						done = true;
 						break;
 					}
 					
+					// placing a flag or clicking
+					// both have a very similar syntax, so grouping them makes sense
 					if(command.startsWith("flag") || command.startsWith("click")) {
 						try {
+							// at first split the command from the coordinates
 							String coordinates = command.split(" ")[1];
+							// then the coordinates themselves
 							String[] cords = coordinates.split(",");
-//						System.out.println(Arrays.toString(cords));
-//						System.out.println(cords.length);
+							// arrays start with 0, so an offset is applied
 							int x = Integer.parseInt(cords[0]) - 1;
 							int y = Integer.parseInt(cords[1]) - 1;
 							
+							// if the coordinates is inside of the board, actually do the command
+							// the different commands are handled
 							if(gameField.isInBounds(x, y)) {
 								if(command.startsWith("flag ")) {
 									gameField.updateFlag(x, y);
-								} else {
-									
-									if(command.startsWith("click ")) {
-										if(gameField.clickField(x, y)) {
-											System.out.println("You clicked on a mine!");
-											break;
-										}
-									}
+								} else if(command.startsWith("click ") && gameField.clickField(x, y)) {
+									// clickField returns true if a mine has been clicked
+									// end the game in that case
+									System.out.println("You clicked on a mine!");
+									break;
 								}
 								
 								done = gameField.isDone();
 							} else {
-								throw new NumberFormatException();
+								System.out.println("invalid number, number too large");
 							}
+							// any error, syntax or wrong patterns, are handled here
 						} catch(NumberFormatException exc) {
-							System.out.println("invalid number");
+							System.out.println("invalid number, number is not a number");
 						} catch(Exception exc) {
 							// catch both IndexOutOfBounds and PatternSyntax
 							System.out.println("invalid syntax");
@@ -119,6 +124,7 @@ public class SinglePlayer {
 					
 					System.out.println("unknown command");
 				} while(!done);
+			}
 			
 			System.out.println("game is finished\n");
 			System.out.println((gameField != null) ? gameField.show() : "");

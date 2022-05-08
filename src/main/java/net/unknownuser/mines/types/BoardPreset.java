@@ -1,5 +1,10 @@
 package net.unknownuser.mines.types;
 
+/**
+ * An enum holding presets for minesweeper boards.<br>
+ * There are 4 presets: {@link #SMALL}, {@link #MEDIUM}, {@link #LARGE}, and {@link #CUSTOM}.<br>
+ * The CUSTOM needs 
+ */
 public enum BoardPreset {
 	SMALL(9,9,10, "small"),
 	MEDIUM(16,16,40, "medium"),
