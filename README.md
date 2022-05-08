@@ -3,7 +3,7 @@
 This is a remake of minesweeper, just in a purely console view.
 
 It's just designed to be a fun project, so no guarantee on functionality.
-Let me know via the [issue page](https://github.com/UnknownUser95/MineSweeper-CLI/issues) if you find one though.
+Let me know via the [issue page](https://github.com/UnknownUser95/MineSweeper-CLI/issues) if you find a bug though.
 
 # Starting a game
 
