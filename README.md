@@ -34,3 +34,7 @@ As of now, there are two options:
 ### exit / done
 
 Ends the game and shows the clear board.
+
+# Contribution
+  
+You should just be able to push a new branch and create a pull request. However I'm quite new to open repositories, so if I did anything wrong and you can't push anything let me know and I'll try to fix it.
