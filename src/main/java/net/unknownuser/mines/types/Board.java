@@ -166,17 +166,23 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Updates all field in the pointsToCheck list.
+	 */
 	private void updateFields() {
 		while(!pointsToCheck.isEmpty()) {
+			
+			// get a point and check it
 			Point point = pointsToCheck.get(0);
-//			boardField[point.x][point.y].update();
 			Field field = getField(point.x, point.y);
+			
 			if((field.getValue() == 0 && field.getShownType() == FieldType.UNKNOWN) || hasEmptyNeighour(point.x, point.y)) {
+				// if it is empty or has an EMPTY neighbour, show it
 				getField(point.x, point.y).update();
 			}
-//			System.out.println(point);
+			
+			// then add all valid neighbours
 			addNeighbours(point.x, point.y);
-//			updateFields();
 			pointsToCheck.remove(0);
 		}
 	}
@@ -209,11 +215,19 @@ public class Board {
 			}
 		};
 		
+		// test for valid fields in a 3x3 field around the current one
 		if(hasEmptyNeighour(x, y)) {
-			isValid.accept(x, y + 1);
-			isValid.accept(x, y - 1);
-			isValid.accept(x + 1, y);
-			isValid.accept(x - 1, y);
+			for(int yy = -1; yy <= 1; yy++) {
+				for(int xx = -1; xx <= 1; xx++) {
+					isValid.accept(x + xx, y + yy);
+				}
+			}
+			
+			// old + version
+//			isValid.accept(x, y + 1);
+//			isValid.accept(x, y - 1);
+//			isValid.accept(x + 1, y);
+//			isValid.accept(x - 1, y);
 		}
 	}
 	
@@ -226,17 +240,25 @@ public class Board {
 	 *         {@code false} otherwise.
 	 */
 	private boolean hasEmptyNeighour(int x, int y) {
-		BiPredicate<Integer, Integer> hasEmpty = (t, u) -> {
-//			Predicate<Field> emptyAndZero = arg0 -> arg0.getActualType() == FieldType.EMPTY && arg0.getValue() == 0;
+		// tests whether a field is EMPTY and has a value of 0
+		BiPredicate<Integer, Integer> isValid = (t, u) -> {
 			Field field = getField(t, u);
 			return isInBounds(t, u) && field.getActualType() == FieldType.EMPTY && field.getValue() == 0;
 		};
 		
-//		System.out.println(boardField[xMid][yMid]);
-		return hasEmpty.test(x, y + 1) || hasEmpty.test(x, y - 1) || hasEmpty.test(x + 1, y) || hasEmpty.test(x - 1, y);
+		// tests in a 3x3 area around the current field
+		for(int yy = -1; yy <= 1; yy++) {
+			for(int xx = -1; xx <= 1; xx++) {
+				if(isValid.test(x + xx, y + yy)) {
+					return true;
+				}
+			}
+		}
+		return false;
+		
+		// old + version
+//		return isValid.test(x, y + 1) || isValid.test(x, y - 1) || isValid.test(x + 1, y) || isValid.test(x - 1, y);
 	}
-	
-	// TODO: no point add when value != 0
 	
 	/**
 	 * Tests if a point is inside of the board.
@@ -263,7 +285,8 @@ public class Board {
 	}
 	
 	/**
-	 * Tests whether this board is finished.
+	 * Tests whether this board is finished.<br>
+	 * Finished means all mines have flags on them and all other fields are discovered.
 	 * 
 	 * @return {@code true} if the board is finished, {@code false} otherwise
 	 */
@@ -273,12 +296,7 @@ public class Board {
 				Field field = getField(x, y);
 				
 				// any of these cases is a reason why the board is not finished
-				if(field.getShownType() == FieldType.UNKNOWN) {
-//					System.out.println("failure at " + field.toString());
-					return false;
-				}
-				
-				if(field.getActualType() == FieldType.MINE && field.getShownType() != FieldType.FLAG) {
+				if((field.getShownType() == FieldType.UNKNOWN) || (field.getActualType() == FieldType.MINE && field.getShownType() != FieldType.FLAG)) {
 //					System.out.println("failure at " + field.toString());
 					return false;
 				}
