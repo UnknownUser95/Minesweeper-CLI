@@ -1,6 +1,6 @@
 # Minesweeper-CLI
 
-This is a remake of minesweeper, just purely in a console view.
+This is a remake of minesweeper, just in a purely console view.
 
 It's just designed to be a fun project, so no guarantee on functionality.
 Let me know via the [issue page](https://github.com/UnknownUser95/MineSweeper-CLI/issues) if you find one though.
@@ -15,9 +15,7 @@ For now, there is no good way to do so. You have to execute the SinglePlayer fil
 
 syntax: click x,y
 
-This is the standard click. It immitates a click, as the name implies.
-
-It works slighty differently, as the fields are only shown in a + way, instead of a 3x3 field around the any field.
+This is the standard click. It imitates a click, as the name implies.
 
 ## flag
 
