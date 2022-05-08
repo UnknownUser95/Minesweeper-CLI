@@ -5,6 +5,9 @@ import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
+/**
+ * A class holding everything a game of minesweeper needs.
+ */
 public class Board {
 	// the board itself
 	private final Field[][] boardField;
@@ -38,7 +41,8 @@ public class Board {
 	}
 	
 	/**
-	 * Sets the values of all fields depending on the amount of neighbouring mines.
+	 * Sets the values of all fields depending on the amount of neighbouring mines.<br>
+	 * Automatically set upon board creation.
 	 */
 	private void generateValues() {
 		for(int y = 0; y < height; y++) {
@@ -145,23 +149,40 @@ public class Board {
 	 * @param y y coordinate of the clicked field
 	 * @return {@code true} if a mine has been clicked, {@code false} otherwise
 	 */
+	// getShownType can return a mine, but it's not required to handle it
+	@SuppressWarnings("incomplete-switch")
 	public boolean clickField(int x, int y) {
-		if(getField(x, y).getActualType() == FieldType.MINE) {
+		Field currentField = getField(x, y);
+		
+		if(currentField.getActualType() == FieldType.MINE) {
 //			getField(x, y).update(); - not needed, since the board is shown anyways
 			return true;
 		}
-		switch (getField(x, y).getShownType()) {
-		case MINE:
-			getField(x, y).update();
-			return true;
-		case EMPTY, FLAG:
-			break;
-		case UNKNOWN:
-			pointsToCheck.add(new Point(x, y));
-			addNeighbours(x, y);
-			updateFields();
-			break;
-		}
+		
+//		switch (getField(x, y).getShownType()) {
+//		case MINE:
+//			getField(x, y).update();
+//			return true;
+//		case EMPTY, FLAG:
+//			break;
+//		case UNKNOWN:
+//			pointsToCheck.add(new Point(x, y));
+//			addNeighbours(x, y);
+//			updateFields();
+//			break;
+//		}
+//		return false;
+		
+		// TODO: test more if the new version has errors
+		
+	// clicking on a board next to a mine should not show any field next to it
+			if(currentField.getValue() != 0) {
+				currentField.update();
+			} else if(currentField.getShownType() == FieldType.UNKNOWN) {
+				pointsToCheck.add(new Point(x, y));
+				addNeighbours(x, y);
+				updateFields();
+			}
 		return false;
 	}
 	
