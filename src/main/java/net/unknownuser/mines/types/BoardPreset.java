@@ -1,15 +1,15 @@
 package net.unknownuser.mines.types;
 
+import net.unknownuser.mines.methods.CustomBoards;
+
 /**
  * An enum holding presets for minesweeper boards.<br>
  * There are 4 presets: {@link #SMALL}, {@link #MEDIUM}, {@link #LARGE}, and {@link #CUSTOM}.<br>
- * The CUSTOM needs 
+ * The CUSTOM should use {@link CustomBoards#createCustomBoard(java.io.BufferedReader)
+ * CustomBoards.createCustomBoard()} method.
  */
 public enum BoardPreset {
-	SMALL(9,9,10, "small"),
-	MEDIUM(16,16,40, "medium"),
-	LARGE(30,16,99, "large"),
-	CUSTOM(0,0,0, "custom");
+	SMALL(9, 9, 10, "small"), MEDIUM(16, 16, 40, "medium"), LARGE(30, 16, 99, "large"), CUSTOM(0, 0, 0, "custom");
 	
 	public final int width;
 	public final int height;
