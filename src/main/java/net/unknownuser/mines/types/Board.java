@@ -6,19 +6,15 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 public class Board {
+	// the board itself
 	private final Field[][] boardField;
 	
+	// quick access to width and height
 	public final int width;
 	public final int height;
 	
+	// a list of all points, which still need to be updated (if they're valid)
 	ArrayList<Point> pointsToCheck = new ArrayList<>();
-	
-	public Board(int width, int height) {
-		boardField = new Field[width][height];
-		this.width = width;
-		this.height = height;
-		initializeBoard();
-	}
 	
 	public Board(int width, int height, int mineAmount) {
 		boardField = new Field[width][height];
@@ -29,17 +25,20 @@ public class Board {
 		generateValues();
 	}
 	
+	/**
+	 * Fills the entire board with EMPTY fields.<br>
+	 * This <b>replaces</b> all existing fields.
+	 */
 	private void initializeBoard() {
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
 				boardField[x][y] = new Field(FieldType.EMPTY, x, y);
-//				System.out.printf("filled [%d|%d]%n", x, y);
 			}
 		}
 	}
 	
 	/**
-	 * Sets the values of all fields
+	 * Sets the values of all fields depending on the amount of neighbouring mines.
 	 */
 	private void generateValues() {
 		for(int y = 0; y < height; y++) {
@@ -315,8 +314,8 @@ public class Board {
 		StringBuilder sb = new StringBuilder();
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
+				// go over each field and get it's actual character
 				sb.append(getField(x, y).getAbsoluteChar());
-//				sb.append(board[x][y].getType().getChar());
 			}
 			sb.append("\n");
 		}
@@ -329,6 +328,7 @@ public class Board {
 	 * @return A copy of this entire game field.
 	 */
 	public Field[][] getEntireBoard() {
+		// the board should not be modified, so clone it
 		return boardField.clone();
 	}
 }
