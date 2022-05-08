@@ -11,19 +11,19 @@ For now, there is no good way to do so. You have to execute the SinglePlayer fil
 
 # Commands
 
-## click
+### click
 
 syntax: click x,y
 
 This is the standard click. It imitates a click, as the name implies.
 
-## flag
+### flag
 
 syntax: flag x,y
 
 Places a flag on an unknown field or removes it. Error on every other type.
 
-## debug
+### debug
 
 syntax: debug <option>
 
@@ -31,6 +31,6 @@ As of now, there are two options:
   - show: displays the board without the "fog"
   - value: shows the value of each board. Mines have a "-"
 
-## exit / done
+### exit / done
 
 Ends the game and shows the clear board.
