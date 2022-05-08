@@ -9,7 +9,24 @@ import net.unknownuser.mines.methods.CustomBoards;
  * CustomBoards.createCustomBoard()} method.
  */
 public enum BoardPreset {
-	SMALL(9, 9, 10, "small"), MEDIUM(16, 16, 40, "medium"), LARGE(30, 16, 99, "large"), CUSTOM(0, 0, 0, "custom");
+	/**
+	 * A small board. 9x9 with 10 mines.
+	 */
+	SMALL(9, 9, 10, "small"),
+	/**
+	 * A medium board. 16x16 with 40 mines.
+	 */
+	MEDIUM(16, 16, 40, "medium"),
+	/**
+	 * A large board. 30x16 with 99 mines.
+	 */
+	LARGE(30, 16, 99, "large"),
+	/**
+	 * The custom preset. Everything is set to 0. To create a custom board
+	 * {@link CustomBoards#createCustomBoard(java.io.BufferedReader)
+	 * CustomBoards.createCustomBoard()}, or a similar method should be used.
+	 */
+	CUSTOM(0, 0, 0, "custom");
 	
 	public final int width;
 	public final int height;
