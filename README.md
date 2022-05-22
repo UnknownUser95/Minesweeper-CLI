@@ -7,7 +7,7 @@ Let me know via the [issue page](https://github.com/UnknownUser95/MineSweeper-CL
 
 # Starting a game
 
-Download the singleplayer.jar on the [release page](https://github.com/UnknownUser95/Minesweeper-CLI/releases). Open the download location, open a console and run "java -jar minesweeper-cli.jar". You will need Java 17.0.3 to run the game. Downloads are available on [Oracles Website](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html).
+Download the singleplayer.jar on the [release page](https://github.com/UnknownUser95/Minesweeper-CLI/releases). Open the download location, open a console and run "java -jar minesweeper-cli.jar". You will need Java 17.0.3 to run the game. Downloads are available on [Oracles Website](https://www.oracle.com/java/technologies/downloads/).
 
 # Commands
 
