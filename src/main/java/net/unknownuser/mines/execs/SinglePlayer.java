@@ -177,12 +177,20 @@ public class SinglePlayer {
 		}
 	}
 	
+	/**
+	 * {@link Thread#sleep(long) Thread.sleep}, but handles the exception.
+	 */
 	private static void sleep(int millis) {
 		try {
 			Thread.sleep(millis);
 		} catch(InterruptedException ignore) {}
 	}
 	
+	/**
+	 * Waits on the BufferedReader, until &lt;enter&gt; is pressed.
+	 * 
+	 * @param br The BufferedReader, which will be waited on.
+	 */
 	private static void waitForInput(BufferedReader br) {
 		try {
 			while(br.read() != '\n') {
