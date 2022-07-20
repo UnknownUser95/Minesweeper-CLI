@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
+import net.unknownuser.ansi.Colour;
+
 /**
  * A class holding everything a game of minesweeper needs.
  */
@@ -127,19 +129,25 @@ public class Board {
 		}
 	}
 	
-	public void updateFlag(int x, int y) {
+	public boolean updateFlag(int x, int y) {
 		Field field = boardField[x][y];
+		
+		boolean validMove;
 		
 		switch (field.getShownType()) {
 		case UNKNOWN:
 			field.setShownType(FieldType.FLAG);
+			validMove = true;
 			break;
 		case FLAG:
 			field.setShownType(FieldType.UNKNOWN);
+			validMove = true;
 			break;
 		default:
-			System.out.printf("unable to put a flag on field at (%d,%d)%n", x, y);
+			validMove = false;
 		}
+		
+		return validMove;
 	}
 	
 	/**
@@ -296,8 +304,14 @@ public class Board {
 		StringBuilder sb = new StringBuilder();
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				sb.append(getField(x, y).getChar());
-//				sb.append(board[x][y].getType().getChar());
+				
+				Field currentField = getField(x, y);
+				if(currentField.getShownType() == FieldType.FLAG) {
+					sb.append(Colour.colourString(Character.toString(currentField.getChar()), Colour.FOREGROUND_BRIGHT_YELLOW));
+				} else {
+					sb.append(getField(x, y).getChar());
+				}
+				
 			}
 			sb.append("\n");
 		}
