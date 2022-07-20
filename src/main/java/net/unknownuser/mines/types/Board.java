@@ -306,11 +306,11 @@ public class Board {
 			for(int x = 0; x < width; x++) {
 				
 				Field currentField = getField(x, y);
-				if(currentField.getShownType() == FieldType.FLAG) {
-					sb.append(Colour.colourString(Character.toString(currentField.getChar()), Colour.FOREGROUND_BRIGHT_YELLOW));
-				} else {
-					sb.append(getField(x, y).getChar());
-				}
+				
+				sb.append(switch(currentField.getShownType()) {
+				case FLAG -> Colour.colourString(Character.toString(currentField.getChar()), Colour.FOREGROUND_BRIGHT_YELLOW);
+				default -> currentField.getChar();
+				});
 				
 			}
 			sb.append("\n");
