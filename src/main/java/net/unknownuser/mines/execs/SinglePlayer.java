@@ -247,13 +247,11 @@ public class SinglePlayer {
 	 * @param br The BufferedReader, which will be waited on.
 	 */
 	private static void waitForInput(BufferedReader br) {
+		System.out.print(Cursor.UP);
 		try {
 			while(br.read() != '\n') {
 				sleep(1);
 			}
-			System.out.print(Cursor.UP);
-			System.out.print("\r");
-			System.out.print(Cursor.ERASE_LINE);
 		} catch(IOException ignore) {}
 	}
 	
