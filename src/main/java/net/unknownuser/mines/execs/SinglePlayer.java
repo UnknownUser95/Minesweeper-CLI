@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
-import org.eclipse.swt.internal.C;
-
 import net.unknownuser.ansi.Cursor;
 import net.unknownuser.mines.methods.CustomBoards;
 import net.unknownuser.mines.types.Board;
