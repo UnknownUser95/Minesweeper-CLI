@@ -1,18 +1,20 @@
 package net.unknownuser.mines.methods;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 
-import net.unknownuser.mines.types.Board;
+import net.unknownuser.mines.types.*;
 
 public abstract class CustomBoards {
 	
 	/**
 	 * A function for handling the creation of a custom board.<br>
-	 * Requires a bufferedReader, since closing the stream System.in here closes it everywhere.
+	 * Requires a bufferedReader, since closing the stream here closes it everywhere.
+	 * 
 	 * @return The player created board, {@code null} if an error occurs during the creation.
 	 */
 	public static Board createCustomBoard(BufferedReader br) {
+		Board createdBoard = null;
+		
 		try {
 			System.out.print("width of the board: ");
 			int width = Integer.parseInt(br.readLine());
@@ -24,11 +26,12 @@ public abstract class CustomBoards {
 			int amountMines = Integer.parseInt(br.readLine());
 			
 			System.out.printf("%nBoard (%dx%d) generated with %d mines", width, height, amountMines);
-			return new Board(width, height, amountMines);
+			createdBoard = new Board(width, height, amountMines);
 		} catch(IOException exc) {
 			System.out.printf("an error occured: %s%n", exc.getMessage());
 		}
-		return null;
+		
+		return createdBoard;
 	}
 	
 }

@@ -1,11 +1,9 @@
 package net.unknownuser.mines.types;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
+import java.util.*;
+import java.util.function.*;
 
-import net.unknownuser.ansi.Colour;
+import net.unknownuser.ansi.*;
 
 /**
  * A class holding everything a game of minesweeper needs.
@@ -19,20 +17,20 @@ public class Board {
 	public final int height;
 	
 	// a list of all points, which still need to be updated (if they're valid)
-	ArrayList<Point> pointsToCheck = new ArrayList<>();
+	private ArrayList<Point> pointsToCheck = new ArrayList<>();
 	
 	public Board(int width, int height, int mineAmount) {
 		boardField = new Field[width][height];
 		this.width = width;
 		this.height = height;
+		
 		initializeBoard();
 		generateMines(mineAmount);
 		generateValues();
 	}
 	
 	/**
-	 * Fills the entire board with EMPTY fields.<br>
-	 * This <b>replaces</b> all existing fields.
+	 * Fills the entire board with {@link FieldType#EMPTY EMPTY} fields.
 	 */
 	private void initializeBoard() {
 		for(int y = 0; y < height; y++) {
@@ -43,15 +41,16 @@ public class Board {
 	}
 	
 	/**
-	 * Sets the values of all fields depending on the amount of neighbouring mines.<br>
-	 * Automatically set upon board creation.
+	 * Sets the values of all fields depending on the amount of neighbouring mines.
 	 */
 	private void generateValues() {
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
+				// mines have -1 by default and can only have that value
 				if(getField(x, y).getActualType() == FieldType.MINE) {
 					continue;
 				}
+				
 				getField(x, y).setValue(getFieldValue(x, y));
 			}
 		}
@@ -64,7 +63,7 @@ public class Board {
 	 * @param yMid y coordinate of the point
 	 * @return The value of the point
 	 */
-	private int getFieldValue(int xMid, int yMid) {
+	protected int getFieldValue(int xMid, int yMid) {
 		int value = 0;
 		for(int y = -1; y <= 1; y++) {
 			for(int x = -1; x <= 1; x++) {
@@ -82,7 +81,7 @@ public class Board {
 	 * 
 	 * @param mines The amount of mines to be generated
 	 */
-	public void generateMines(int mines) {
+	private void generateMines(int mines) {
 		Random random = new Random();
 		
 		for(int i = 0; i < mines; i++) {
@@ -132,22 +131,18 @@ public class Board {
 	public boolean updateFlag(int x, int y) {
 		Field field = boardField[x][y];
 		
-		boolean validMove;
-		
-		switch (field.getShownType()) {
-		case UNKNOWN:
+		return switch (field.getShownType()) {
+		case UNKNOWN -> {
 			field.setShownType(FieldType.FLAG);
-			validMove = true;
-			break;
-		case FLAG:
-			field.setShownType(FieldType.UNKNOWN);
-			validMove = true;
-			break;
-		default:
-			validMove = false;
+			yield true;
 		}
 		
-		return validMove;
+		case FLAG -> {
+			field.setShownType(FieldType.UNKNOWN);
+			yield true;
+		}
+		default -> false;
+		};
 	}
 	
 	/**
@@ -157,8 +152,6 @@ public class Board {
 	 * @param y y coordinate of the clicked field
 	 * @return {@code true} if a mine has been clicked, {@code false} otherwise
 	 */
-	// getShownType can return a mine, but it's not required to handle it
-	@SuppressWarnings("incomplete-switch")
 	public boolean clickField(int x, int y) {
 		Field currentField = getField(x, y);
 		
@@ -167,30 +160,15 @@ public class Board {
 			return true;
 		}
 		
-//		switch (getField(x, y).getShownType()) {
-//		case MINE:
-//			getField(x, y).update();
-//			return true;
-//		case EMPTY, FLAG:
-//			break;
-//		case UNKNOWN:
-//			pointsToCheck.add(new Point(x, y));
-//			addNeighbours(x, y);
-//			updateFields();
-//			break;
-//		}
-//		return false;
+		// clicking on a board next to a mine should not show any field next to it
+		if(currentField.getValue() != 0) {
+			currentField.update();
+		} else if(currentField.getShownType() == FieldType.UNKNOWN) {
+			pointsToCheck.add(new Point(x, y));
+			addNeighbours(x, y);
+			updateFields();
+		}
 		
-		// TODO: test more if the new version has errors
-		
-	// clicking on a board next to a mine should not show any field next to it
-			if(currentField.getValue() != 0) {
-				currentField.update();
-			} else if(currentField.getShownType() == FieldType.UNKNOWN) {
-				pointsToCheck.add(new Point(x, y));
-				addNeighbours(x, y);
-				updateFields();
-			}
 		return false;
 	}
 	
@@ -221,7 +199,7 @@ public class Board {
 	 * @param x x coordinate of the middle
 	 * @param y y coordinate of the middle
 	 */
-	private void addNeighbours(int x, int y) {
+	protected void addNeighbours(int x, int y) {
 		// test if any field is shown as UNKNOWN and is EMPTY
 		BiPredicate<Integer, Integer> isUnknownEmpty = (t, u) -> {
 			if(isInBounds(t, u)) {
@@ -250,12 +228,6 @@ public class Board {
 					isValid.accept(x + xx, y + yy);
 				}
 			}
-			
-			// old + version
-//			isValid.accept(x, y + 1);
-//			isValid.accept(x, y - 1);
-//			isValid.accept(x + 1, y);
-//			isValid.accept(x - 1, y);
 		}
 	}
 	
@@ -283,9 +255,6 @@ public class Board {
 			}
 		}
 		return false;
-		
-		// old + version
-//		return isValid.test(x, y + 1) || isValid.test(x, y - 1) || isValid.test(x + 1, y) || isValid.test(x - 1, y);
 	}
 	
 	/**
@@ -307,7 +276,7 @@ public class Board {
 				
 				Field currentField = getField(x, y);
 				
-				sb.append(switch(currentField.getShownType()) {
+				sb.append(switch (currentField.getShownType()) {
 				case FLAG -> Colour.colourString(Character.toString(currentField.getChar()), Colour.FOREGROUND_BRIGHT_YELLOW);
 				default -> currentField.getChar();
 				});
@@ -330,8 +299,8 @@ public class Board {
 				Field field = getField(x, y);
 				
 				// any of these cases is a reason why the board is not finished
+				// any field is not uncovered OR is a mine, but doesn't have a flag
 				if((field.getShownType() == FieldType.UNKNOWN) || (field.getActualType() == FieldType.MINE && field.getShownType() != FieldType.FLAG)) {
-//					System.out.println("failure at " + field.toString());
 					return false;
 				}
 			}
@@ -343,7 +312,7 @@ public class Board {
 	/**
 	 * Shows the actual field types of the board. It doesn't change any values.
 	 * 
-	 * @return The actual board as a String
+	 * @return The actual board as a string.
 	 */
 	public String show() {
 		StringBuilder sb = new StringBuilder();
@@ -363,7 +332,7 @@ public class Board {
 	 * @return A copy of this entire game field.
 	 */
 	public Field[][] getEntireBoard() {
-		// the board should not be modified, so clone it
+		// the board should not be modified from the outside, so clone it
 		return boardField.clone();
 	}
 }
